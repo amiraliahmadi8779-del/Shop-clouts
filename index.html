@@ -1,106 +1,79 @@
+
 <!DOCTYPE html>
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>فروشگاه لباس امیرعلی</title>
+<title>My Shop</title>
 
 <style>
-body{
-    margin:0;
-    font-family:tahoma;
-    background:#ffffff;
-    text-align:center;
-}
-
-header{
-    background:black;
-    color:white;
-    padding:20px;
-    font-size:22px;
-}
-
-.products{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:25px;
-    padding:40px;
-}
-
-.card{
-    width:250px;
-    background:#fff;
-    border-radius:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.1);
-    padding:15px;
-    transition:0.3s;
-}
-
-.card:hover{
-    transform:translateY(-8px);
-}
-
-.card img{
-    width:100%;
-    border-radius:10px;
-}
-
-.price{
-    color:green;
-    font-weight:bold;
-    margin:10px 0;
-}
-
-button{
-    background:black;
-    color:white;
-    border:none;
-    padding:10px 20px;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-button:hover{
-    background:green;
-}
-
-footer{
-    background:black;
-    color:white;
-    padding:20px;
-    margin-top:40px;
-}
+body { font-family: Arial; background:#f4f4f4; margin:0; text-align:center;}
+h1 { background:black; color:white; padding:15px;}
+.products { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; padding:20px;}
+.card { background:white; padding:15px; border-radius:10px; box-shadow:0 5px 10px rgba(0,0,0,0.1);}
+.card img { width:100%; border-radius:10px;}
+.price { color:green; font-size:18px; margin:10px 0;}
+button { background:black; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;}
+button:hover { background:green;}
+.form-box { display:none; padding:20px; background:white; margin:20px; border-radius:10px;}
+input { padding:10px; margin:5px; width:80%; }
 </style>
 </head>
 
 <body>
 
-<header>🔥 فروشگاه لباس امیرعلی 🔥</header>
+<h1>فروشگاه امیرعلی 🛒</h1>
 
 <div class="products">
-
 <div class="card">
-<img src="https://images.unsplash.com/photo-1520975916090-3105956dac38">
-<h3>هودی مشکی اسپرت</h3>
-<p>کیفیت عالی مناسب پاییز</p>
-<div class="price">850,000 تومان</div>
-<button>خرید</button>
+<img src="https://via.placeholder.com/300">
+<h3>هدفون حرفه‌ای</h3>
+<p class="price">1200 افغانی</p>
+<button onclick="showForm('هدفون حرفه‌ای','1200')">خرید</button>
 </div>
 
 <div class="card">
-<img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d">
-<h3>تیشرت سفید</h3>
-<p>پارچه نخ درجه یک</p>
-<div class="price">420,000 تومان</div>
-<button>خرید</button>
+<img src="https://via.placeholder.com/300">
+<h3>ساعت هوشمند</h3>
+<p class="price">3500 افغانی</p>
+<button onclick="showForm('ساعت هوشمند','3500')">خرید</button>
+</div>
 </div>
 
+<div class="form-box" id="orderForm">
+<h2 id="productName"></h2>
+<input type="text" id="name" placeholder="نام شما"><br>
+<input type="text" id="phone" placeholder="شماره تماس"><br>
+<button onclick="sendToWhatsApp()">ارسال سفارش</button>
 </div>
 
-<footer>
-📞 0796552252 | 📧 amiraliahmadi5522@gmail.com 
-</footer>
+<script>
+let selectedProduct = "";
+let selectedPrice = "";
+
+function showForm(product, price){
+    selectedProduct = product;
+    selectedPrice = price;
+    document.getElementById("orderForm").style.display = "block";
+    document.getElementById("productName").innerText = "سفارش: " + product;
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+function sendToWhatsApp(){
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+
+    let message = "سفارش جدید:%0A" +
+                  "محصول: " + selectedProduct + "%0A" +
+                  "قیمت: " + selectedPrice + " افغانی%0A" +
+                  "نام مشتری: " + name + "%0A" +
+                  "شماره تماس: " + phone;
+
+    let whatsappURL = "https://wa.me/937XXXXXXXXX?text=" + message;
+
+    window.open(whatsappURL, "_blank");
+}
+</script>
 
 </body>
 </html>
