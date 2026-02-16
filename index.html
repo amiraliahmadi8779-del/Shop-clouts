@@ -1,35 +1,210 @@
-head>
+<!DOCTYPE html>
+<html lang="fa">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amirali Shop</title>
+<title>Amirali Ultra Shop</title>
 
 <style>
-body {
-    font-family: Arial;
-    margin: 0;
-    background: #ffffff;
-}
+body { font-family: Arial; margin:0; background:#fff; }
 
 header {
-    background: #f8f8f8;
-    padding: 20px;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    border-bottom: 1px solid #ddd;
+    background:#f8f8f8;
+    padding:15px;
+    text-align:center;
+    border-bottom:1px solid #ddd;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.top-bar {
+    display:flex;
+    justify-content:space-between;
+    padding:10px 20px;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+input, select {
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:5px;
 }
 
 .products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-    gap: 20px;
-    padding: 20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    padding:20px;
 }
 
 .card {
-    border: 1px solid #eee;
-    border-radius: 10px;
-    padding: 15px;
-    text-align: center;
-    transition: 0.3s;
+    border:1px solid #eee;
+    padding:15px;
+    border-radius:10px;
+    transition:0.3s;
 }
+
+.card:hover { box-shadow:0 5px 15px rgba(0,0,0,0.1); }
+
+.card img { width:100%; border-radius:8px; }
+
+.price { color:green; font-weight:bold; margin:8px 0; }
+
+button {
+    background:black;
+    color:white;
+    border:none;
+    padding:8px 12px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover { background:green; }
+
+.cart {
+    padding:15px;
+    border-top:1px solid #ddd;
+}
+
+.form-box { margin-top:15px; }
+
+</style>
+</head>
+
+<body>
+
+<header>🛒 فروشگاه حرفه‌ای امیرعلی</header>
+
+<div class="top-bar">
+<input type="text" id="search" placeholder="جستجوی محصول..." onkeyup="filterProducts()">
+
+<select id="category" onchange="filterProducts()">
+<option value="all">همه دسته‌ها</option>
+<option value="mobile">موبایل</option>
+<option value="audio">صوتی</option>
+<option value="computer">کامپیوتر</option>
+</select>
+</div>
+
+<div class="products" id="productList"></div>
+
+<div class="cart">
+<h3>🛍 سبد خرید</h3>
+<div id="cartItems"></div>
+<p><b>جمع کل: </b><span id="total">0</span> افغانی</p>
+
+<div class="form-box">
+<input type="text" id="customerName" placeholder="نام شما">
+<input type="text" id="customerPhone" placeholder="شماره تماس">
+<button onclick="sendOrder()">ارسال سفارش به واتساپ</button>
+</div>
+</div>
+
+<script>
+
+const products = [
+{name:"هدفون بلوتوث",price:1200,cat:"audio"},
+{name:"ایرپاد",price:1800,cat:"audio"},
+{name:"اسپیکر",price:2500,cat:"audio"},
+{name:"موبایل سامسونگ",price:15000,cat:"mobile"},
+{name:"موبایل شیائومی",price:13000,cat:"mobile"},
+{name:"تبلت",price:14000,cat:"mobile"},
+{name:"لپتاپ Dell",price:45000,cat:"computer"},
+{name:"ماوس گیمینگ",price:1500,cat:"computer"},
+{name:"کیبورد RGB",price:2200,cat:"computer"},
+{name:"مانیتور 24 اینچ",price:11000,cat:"computer"},
+{name:"پاوربانک",price:800,cat:"mobile"},
+{name:"فلش 64GB",price:600,cat:"computer"},
+{name:"هارد 1TB",price:5000,cat:"computer"},
+{name:"مودم WiFi",price:2500,cat:"mobile"},
+{name:"ساعت هوشمند",price:3500,cat:"mobile"},
+{name:"دوربین دیجیتال",price:32000,cat:"computer"},
+{name:"کنسول بازی",price:38000,cat:"computer"},
+{name:"پرینتر",price:9000,cat:"computer"},
+{name:"میکروفون",price:4000,cat:"audio"},
+{name:"چراغ LED",price:700,cat:"mobile"},
+{name:"کیف لپتاپ",price:900,cat:"computer"},
+{name:"صندلی گیمینگ",price:12000,cat:"computer"},
+{name:"شارژر سریع",price:500,cat:"mobile"},
+{name:"کابل Type-C",price:300,cat:"mobile"},
+{name:"مچ‌بند ورزشی",price:2000,cat:"mobile"}
+];
+
+let cart = [];
+
+function loadProducts(){
+    const list = document.getElementById("productList");
+    list.innerHTML="";
+    products.forEach((p,i)=>{
+        list.innerHTML+=`
+        <div class="card">
+        <img src="https://via.placeholder.com/300">
+        <h4>${p.name}</h4>
+        <div class="price">${p.price} افغانی</div>
+        <button onclick="addToCart(${i})">افزودن به سبد</button>
+        </div>`;
+    });
+}
+
+function addToCart(index){
+    cart.push(products[index]);
+    updateCart();
+}
+
+function updateCart(){
+    const cartDiv=document.getElementById("cartItems");
+    let total=0;
+    cartDiv.innerHTML="";
+    cart.forEach(item=>{
+        total+=item.price;
+        cartDiv.innerHTML+=`<p>${item.name} - ${item.price} افغانی</p>`;
+    });
+    document.getElementById("total").innerText=total;
+}
+
+function filterProducts(){
+    let search=document.getElementById("search").value.toLowerCase();
+    let cat=document.getElementById("category").value;
+    const list=document.getElementById("productList");
+    list.innerHTML="";
+    products.forEach((p,i)=>{
+        if((p.name.toLowerCase().includes(search)) &&
+           (cat==="all"||p.cat===cat)){
+            list.innerHTML+=`
+            <div class="card">
+            <img src="https://via.placeholder.com/300">
+            <h4>${p.name}</h4>
+            <div class="price">${p.price} افغانی</div>
+            <button onclick="addToCart(${i})">افزودن به سبد</button>
+            </div>`;
+        }
+    });
+}
+
+function sendOrder(){
+    let name=document.getElementById("customerName").value;
+    let phone=document.getElementById("customerPhone").value;
+
+    if(cart.length===0){ alert("سبد خرید خالی است"); return; }
+
+    let total=document.getElementById("total").innerText;
+
+    let message="سفارش جدید:%0A";
+    cart.forEach(item=>{
+        message+= item.name+" - "+item.price+" افغانی%0A";
+    });
+
+    message+="جمع کل: "+total+" افغانی%0A";
+    message+="نام مشتری: "+name+"%0A";
+    message+="شماره تماس: "+phone;
+
+    window.open("https://wa.me/0796552252?text="+message,"_blank");
+}
+
+loadProducts();
+
+</script>
+
+</body>
+</html>
