@@ -1,79 +1,120 @@
-
 <!DOCTYPE html>
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Shop</title>
+<title>Amirali Shop</title>
 
 <style>
-body { font-family: Arial; background:#f4f4f4; margin:0; text-align:center;}
-h1 { background:black; color:white; padding:15px;}
-.products { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; padding:20px;}
-.card { background:white; padding:15px; border-radius:10px; box-shadow:0 5px 10px rgba(0,0,0,0.1);}
-.card img { width:100%; border-radius:10px;}
-.price { color:green; font-size:18px; margin:10px 0;}
-button { background:black; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;}
-button:hover { background:green;}
-.form-box { display:none; padding:20px; background:white; margin:20px; border-radius:10px;}
-input { padding:10px; margin:5px; width:80%; }
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #ffffff;
+}
+
+header {
+    background: #f8f8f8;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.card:hover {
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.price {
+    color: #00a000;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+button {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #00a000;
+}
+
+.form-box {
+    display: none;
+    padding: 20px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+}
+
+input {
+    padding: 10px;
+    width: 250px;
+    margin: 5px;
+}
 </style>
 </head>
 
 <body>
 
-<h1>فروشگاه امیرعلی 🛒</h1>
+<header>🛒 فروشگاه حرفه‌ای امیرعلی</header>
 
-<div class="products">
-<div class="card">
-<img src="https://via.placeholder.com/300">
-<h3>هدفون حرفه‌ای</h3>
-<p class="price">1200 افغانی</p>
-<button onclick="showForm('هدفون حرفه‌ای','1200')">خرید</button>
-</div>
-
-<div class="card">
-<img src="https://via.placeholder.com/300">
-<h3>ساعت هوشمند</h3>
-<p class="price">3500 افغانی</p>
-<button onclick="showForm('ساعت هوشمند','3500')">خرید</button>
-</div>
-</div>
+<div class="products" id="productList"></div>
 
 <div class="form-box" id="orderForm">
-<h2 id="productName"></h2>
-<input type="text" id="name" placeholder="نام شما"><br>
-<input type="text" id="phone" placeholder="شماره تماس"><br>
-<button onclick="sendToWhatsApp()">ارسال سفارش</button>
+<h2 id="selectedProduct"></h2>
+<input type="text" id="customerName" placeholder="نام شما"><br>
+<input type="text" id="customerPhone" placeholder="شماره تماس شما"><br>
+<button onclick="sendOrder()">ارسال سفارش به واتساپ</button>
 </div>
 
 <script>
-let selectedProduct = "";
-let selectedPrice = "";
 
-function showForm(product, price){
-    selectedProduct = product;
-    selectedPrice = price;
-    document.getElementById("orderForm").style.display = "block";
-    document.getElementById("productName").innerText = "سفارش: " + product;
-    window.scrollTo(0, document.body.scrollHeight);
-}
-
-function sendToWhatsApp(){
-    let name = document.getElementById("name").value;
-    let phone = document.getElementById("phone").value;
-
-    let message = "سفارش جدید:%0A" +
-                  "محصول: " + selectedProduct + "%0A" +
-                  "قیمت: " + selectedPrice + " افغانی%0A" +
-                  "نام مشتری: " + name + "%0A" +
-                  "شماره تماس: " + phone;
-
-    let whatsappURL = "https://wa.me/937XXXXXXXXX?text=" + message;
-
-    window.open(whatsappURL, "_blank");
-}
-</script>
-
-</body>
-</html>
+const products = [
+{ name:"هدفون بلوتوث", price:"1200", desc:"کیفیت عالی، بیس قوی، شارژ طولانی" },
+{ name:"ساعت هوشمند", price:"3500", desc:"نمایش اعلان‌ها، ضد آب، باتری قوی" },
+{ name:"موبایل سامسونگ", price:"15000", desc:"حافظه 128GB، دوربین قوی" },
+{ name:"لپتاپ Dell", price:"45000", desc:"مناسب برنامه‌نویسی و طراحی" },
+{ name:"پاوربانک", price:"800", desc:"10000mAh شارژ سریع" },
+{ name:"کیبورد گیمینگ", price:"2200", desc:"RGB نورپردازی حرفه‌ای" },
+{ name:"ماوس گیمینگ", price:"1500", desc:"دقت بالا مخصوص بازی" },
+{ name:"فلش 64GB", price:"600", desc:"سرعت انتقال بالا" },
+{ name:"مودم WiFi", price:"2500", desc:"پوشش دهی قوی اینترنت" },
+{ name:"هارد اکسترنال", price:"5000", desc:"1TB ظرفیت بالا" },
+{ name:"تلویزیون 43 اینچ", price:"22000", desc:"Full HD کیفیت تصویر عالی" },
+{ name:"ایرپاد", price:"1800", desc:"کوچک، سبک، کیفیت صدا عالی" },
+{ name:"اسپیکر بلوتوث", price:"2700", desc:"صدای قوی و شفاف" },
+{ name:"کنسول بازی", price:"38000", desc:"مخصوص گیم حرفه‌ای" },
+{ name:"دوربین دیجیتال", price:"32000", desc:"عکاسی حرفه‌ای HD" },
+{ name:"پرینتر HP", price:"9000", desc:"چاپ سریع و باکیفیت" },
+{ name:"میکروفون استودیویی", price:"4000", desc:"مناسب ضبط صدا" },
+{ name:"چراغ مطالعه LED", price:"700", desc:"کم مصرف و زیبا" },
+{ name:"کیف لپتاپ", price:"900", desc:"ضد ضربه و مقاوم" },
+{ name:"صندلی گیمینگ", price:"12000", desc:"راحتی فوق‌العاده" },
+{ name:"تبلت", price:"14000", desc:"صفحه بزرگ، باتری قوی" },
+{ name:"شارژر سریع", price:"500", desc:"Fast Charging" },
+{ name:"مانیت
