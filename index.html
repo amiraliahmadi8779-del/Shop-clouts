@@ -3,175 +3,142 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Golden Voice Shop</title>
+<title>Amir Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-body{
-    margin:0;
-    font-family:sans-serif;
-    background:#f4f4f4;
-}
+body{margin:0;font-family:'Vazirmatn',sans-serif;background:#f5f6fa;}
+header{background:#111;color:white;display:flex;justify-content:space-between;align-items:center;padding:15px 30px;}
+.logo{font-size:24px;font-weight:bold;color:#00e0ff;}
+.controls{display:flex;gap:10px;}
+input,select{padding:7px;border-radius:5px;border:none;}
+.cart-icon{cursor:pointer;background:#00e0ff;padding:8px 12px;border-radius:5px;color:black;font-weight:bold;}
 
-/* ===== منو ===== */
-header{
-    background:#111;
-    color:white;
-    padding:15px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;padding:30px;}
+.card{background:white;padding:15px;border-radius:15px;box-shadow:0 5px 20px rgba(0,0,0,0.08);transition:0.3s;}
+.card:hover{transform:translateY(-5px);}
+.card img{width:100%;border-radius:10px;}
+.price{color:#00b894;font-weight:bold;margin:10px 0;}
+.btn{background:#00e0ff;border:none;padding:8px;width:100%;border-radius:8px;cursor:pointer;font-weight:bold;}
+.btn:hover{background:#00bcd4;}
 
-nav a{
-    color:white;
-    text-decoration:none;
-    margin:0 10px;
-}
-
-nav a:hover{
-    color:gold;
-}
-
-/* ===== لوگو متحرک ===== */
-.logo{
-    font-size:30px;
-    font-weight:bold;
-    color:gold;
-    animation: glow 2s infinite alternate;
-}
-
-@keyframes glow{
-    from { text-shadow:0 0 5px gold; }
-    to { text-shadow:0 0 20px orange; }
-}
-
-.logo-container{
-    position:relative;
-    text-align:center;
-    margin-top:20px;
-}
-
-.walker{
-    width:40px;
-    height:40px;
-    background:gold;
-    border-radius:50%;
-    position:absolute;
-    bottom:-50px;
-    left:-100px;
-    animation: walk 6s linear infinite;
-}
-
-@keyframes walk{
-    0%{ left:-100px; }
-    100%{ left:100%; }
-}
-
-.walker::before,
-.walker::after{
-    content:"";
-    position:absolute;
-    width:8px;
-    height:20px;
-    background:gold;
-    bottom:-15px;
-    animation: leg 0.5s infinite alternate;
-}
-
-.walker::before{ left:8px; }
-.walker::after{ right:8px; animation-delay:0.5s; }
-
-@keyframes leg{
-    from{ transform:rotate(-20deg); }
-    to{ transform:rotate(20deg); }
-}
-
-/* ===== محصولات ===== */
-.products{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:20px;
-    padding:30px;
-}
-
-.card{
-    background:white;
-    padding:15px;
-    border-radius:10px;
-    text-align:center;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
-}
-
-.card img{
-    width:100%;
-    border-radius:10px;
-}
-
-.price{
-    color:green;
-    font-weight:bold;
-    margin:10px 0;
-}
-
-.btn{
-    background:gold;
-    padding:10px;
-    border:none;
-    border-radius:5px;
-    cursor:pointer;
-}
-
-.btn:hover{
-    background:orange;
-}
+.cart-box{position:fixed;right:0;top:0;width:300px;height:100%;background:white;box-shadow:-5px 0 15px rgba(0,0,0,0.1);padding:20px;overflow:auto;display:none;}
+.checkout{background:#25D366;color:white;padding:10px;border:none;width:100%;border-radius:8px;cursor:pointer;margin-top:10px;}
 </style>
 </head>
 
 <body>
 
 <header>
-    <div class="logo">Golden Voice</div>
-    <nav>
-        <a href="#">خانه</a>
-        <a href="#">محصولات</a>
-        <a href="#">تماس با ما</a>
-    </nav>
+<div class="logo">Amir Shop</div>
+
+<div class="controls">
+<input type="text" id="search" placeholder="جستجو...">
+<select id="category">
+<option value="all">همه دسته‌ها</option>
+<option value="مردانه">مردانه</option>
+<option value="زنانه">زنانه</option>
+<option value="اسپرت">اسپرت</option>
+</select>
+</div>
+
+<div class="cart-icon" onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</div>
 </header>
 
-<div class="logo-container">
-    <div class="walker"></div>
+<div class="products" id="product-list"></div>
+
+<div class="cart-box" id="cart-box">
+<h3>سبد خرید</h3>
+<div id="cart-items"></div>
+<button class="checkout" onclick="checkout()">خرید در واتساپ</button>
 </div>
 
-<section class="products">
+<script>
+let products=[
+{id:1,name:"هودی اسپرت",price:1200,cat:"اسپرت",img:"https://via.placeholder.com/300"},
+{id:2,name:"تی شرت مشکی",price:800,cat:"مردانه",img:"https://via.placeholder.com/300"},
+{id:3,name:"پیراهن رسمی",price:1500,cat:"مردانه",img:"https://via.placeholder.com/300"},
+{id:4,name:"مانتو جدید",price:2000,cat:"زنانه",img:"https://via.placeholder.com/300"},
+{id:5,name:"کت پاییزی",price:2200,cat:"مردانه",img:"https://via.placeholder.com/300"},
+{id:6,name:"شلوار جین",price:1300,cat:"مردانه",img:"https://via.placeholder.com/300"},
+{id:7,name:"لباس مجلسی",price:2500,cat:"زنانه",img:"https://via.placeholder.com/300"},
+{id:8,name:"سویشرت سفید",price:1100,cat:"اسپرت",img:"https://via.placeholder.com/300"},
+{id:9,name:"کفش اسپرت",price:1800,cat:"اسپرت",img:"https://via.placeholder.com/300"},
+{id:10,name:"چادر مشکی",price:1700,cat:"زنانه",img:"https://via.placeholder.com/300"},
+{id:11,name:"پالتو زمستانی",price:3000,cat:"زنانه",img:"https://via.placeholder.com/300"},
+{id:12,name:"تی شرت سفید",price:750,cat:"مردانه",img:"https://via.placeholder.com/300"},
+{id:13,name:"ست ورزشی",price:1600,cat:"اسپرت",img:"https://via.placeholder.com/300"},
+{id:14,name:"کت چرم",price:3500,cat:"مردانه",img:"https://via.placeholder.com/300"},
+{id:15,name:"بلوز دخترانه",price:900,cat:"زنانه",img:"https://via.placeholder.com/300"},
+{id:16,name:"کلاه اسپرت",price:400,cat:"اسپرت",img:"https://via.placeholder.com/300"},
+{id:17,name:"شال جدید",price:500,cat:"زنانه",img:"https://via.placeholder.com/300"},
+{id:18,name:"پیراهن تابستانی",price:1400,cat:"زنانه",img:"https://via.placeholder.com/300"},
+{id:19,name:"سویشرت مردانه",price:1500,cat:"مردانه",img:"https://via.placeholder.com/300"},
+{id:20,name:"کفش رسمی",price:2800,cat:"مردانه",img:"https://via.placeholder.com/300"}
+];
 
+let cart=[];
+
+function displayProducts(list){
+let container=document.getElementById("product-list");
+container.innerHTML="";
+list.forEach(p=>{
+container.innerHTML+=`
 <div class="card">
-    <img src="https://via.placeholder.com/300x300" alt="لباس 1">
-    <h3>لباس اسپرت</h3>
-    <div class="price">1200 افغانی</div>
-    <a href="https://wa.me/YOURNUMBER" target="_blank">
-        <button class="btn">خرید در واتساپ</button>
-    </a>
-</div>
+<img src="${p.img}">
+<h3>${p.name}</h3>
+<div class="price">${p.price} افغانی</div>
+<button class="btn" onclick="addToCart(${p.id})">افزودن به سبد</button>
+</div>`;
+});
+}
 
-<div class="card">
-    <img src="https://via.placeholder.com/300x300" alt="لباس 2">
-    <h3>لباس رسمی</h3>
-    <div class="price">1500 افغانی</div>
-    <a href="https://wa.me/YOURNUMBER" target="_blank">
-        <button class="btn">خرید در واتساپ</button>
-    </a>
-</div>
+function addToCart(id){
+let product=products.find(p=>p.id===id);
+cart.push(product);
+updateCart();
+}
 
-<div class="card">
-    <img src="https://via.placeholder.com/300x300" alt="لباس 3">
-    <h3>هودی جدید</h3>
-    <div class="price">1000 افغانی</div>
-    <a href="https://wa.me/YOURNUMBER" target="_blank">
-        <button class="btn">خرید در واتساپ</button>
-    </a>
-</div>
+function updateCart(){
+document.getElementById("cart-count").innerText=cart.length;
+let items=document.getElementById("cart-items");
+items.innerHTML="";
+cart.forEach(p=>{
+items.innerHTML+=`<p>${p.name} - ${p.price} افغانی</p>`;
+});
+}
 
-</section>
+function toggleCart(){
+let box=document.getElementById("cart-box");
+box.style.display=box.style.display==="block"?"none":"block";
+}
+
+function checkout(){
+let text="سلام، این محصولات رو میخوام:%0A";
+cart.forEach(p=>{
+text+=p.name+" - "+p.price+" افغانی%0A";
+});
+window.open("https://wa.me/937XXXXXXXX?text="+text);
+}
+
+function filterProducts(){
+let search=document.getElementById("search").value.toLowerCase();
+let category=document.getElementById("category").value;
+
+let filtered=products.filter(p=>{
+let matchName=p.name.toLowerCase().includes(search);
+let matchCat=(category==="all"||p.cat===category);
+return matchName && matchCat;
+});
+
+displayProducts(filtered);
+}
+
+document.getElementById("search").addEventListener("keyup",filterProducts);
+document.getElementById("category").addEventListener("change",filterProducts);
+
+displayProducts(products);
+</script>
 
 </body>
 </html>
