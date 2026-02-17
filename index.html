@@ -3,224 +3,175 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amirali Pro Shop</title>
+<title>Golden Voice Shop</title>
 
 <style>
-:root{
---bg:#ffffff;
---text:#000000;
---card:#f9f9f9;
-}
-
-.dark{
---bg:#111;
---text:#fff;
---card:#1e1e1e;
-}
-
 body{
-margin:0;
-font-family:Tahoma;
-background:var(--bg);
-color:var(--text);
-transition:0.3s;
+    margin:0;
+    font-family:sans-serif;
+    background:#f4f4f4;
 }
 
+/* ===== منو ===== */
 header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 30px;
-background:#000;
-color:#fff;
+    background:#111;
+    color:white;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
 nav a{
-color:white;
-margin:0 10px;
-text-decoration:none;
-cursor:pointer;
+    color:white;
+    text-decoration:none;
+    margin:0 10px;
 }
 
-.container{
-padding:20px;
+nav a:hover{
+    color:gold;
 }
 
+/* ===== لوگو متحرک ===== */
+.logo{
+    font-size:30px;
+    font-weight:bold;
+    color:gold;
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow{
+    from { text-shadow:0 0 5px gold; }
+    to { text-shadow:0 0 20px orange; }
+}
+
+.logo-container{
+    position:relative;
+    text-align:center;
+    margin-top:20px;
+}
+
+.walker{
+    width:40px;
+    height:40px;
+    background:gold;
+    border-radius:50%;
+    position:absolute;
+    bottom:-50px;
+    left:-100px;
+    animation: walk 6s linear infinite;
+}
+
+@keyframes walk{
+    0%{ left:-100px; }
+    100%{ left:100%; }
+}
+
+.walker::before,
+.walker::after{
+    content:"";
+    position:absolute;
+    width:8px;
+    height:20px;
+    background:gold;
+    bottom:-15px;
+    animation: leg 0.5s infinite alternate;
+}
+
+.walker::before{ left:8px; }
+.walker::after{ right:8px; animation-delay:0.5s; }
+
+@keyframes leg{
+    from{ transform:rotate(-20deg); }
+    to{ transform:rotate(20deg); }
+}
+
+/* ===== محصولات ===== */
 .products{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:20px;
+    padding:30px;
 }
 
 .card{
-background:var(--card);
-padding:15px;
-border-radius:12px;
-transition:0.3s;
-}
-
-.card:hover{
-transform:translateY(-5px);
-box-shadow:0 5px 20px rgba(0,0,0,0.2);
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
 .card img{
-width:100%;
-height:200px;
-object-fit:cover;
-border-radius:10px;
+    width:100%;
+    border-radius:10px;
 }
 
 .price{
-color:green;
-font-weight:bold;
-margin:8px 0;
+    color:green;
+    font-weight:bold;
+    margin:10px 0;
 }
 
-button{
-background:black;
-color:white;
-border:none;
-padding:8px 12px;
-border-radius:6px;
-cursor:pointer;
+.btn{
+    background:gold;
+    padding:10px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
 }
 
-button:hover{
-background:green;
+.btn:hover{
+    background:orange;
 }
-
-.cart{
-margin-top:40px;
-padding:15px;
-background:var(--card);
-border-radius:10px;
-}
-
-input{
-padding:8px;
-margin:5px 0;
-width:100%;
-border:1px solid #ccc;
-border-radius:5px;
-}
-
-.toggle{
-background:white;
-color:black;
-padding:5px 10px;
-border-radius:5px;
-cursor:pointer;
-}
-
 </style>
 </head>
 
 <body>
 
 <header>
-<div><b>🛒 Amirali Shop</b></div>
-<nav>
-<a onclick="showHome()">خانه</a>
-<a onclick="showProducts()">محصولات</a>
-<a onclick="showSettings()">تنظیمات</a>
-</nav>
+    <div class="logo">Golden Voice</div>
+    <nav>
+        <a href="#">خانه</a>
+        <a href="#">محصولات</a>
+        <a href="#">تماس با ما</a>
+    </nav>
 </header>
 
-<div class="container" id="content"></div>
+<div class="logo-container">
+    <div class="walker"></div>
+</div>
 
-<script>
+<section class="products">
 
-const products=[
-{name:"هدفون بلوتوث",price:1200,img:"https://images.unsplash.com/photo-1518441902111-a3c8c4e4b9d3"},
-{name:"لپتاپ",price:45000,img:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8"},
-{name:"موبایل",price:15000,img:"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9"},
-{name:"کیبورد",price:2200,img:"https://images.unsplash.com/photo-1518770660439-4636190af475"},
-{name:"ماوس",price:1500,img:"https://images.unsplash.com/photo-1587829741301-dc798b83add3"},
-{name:"ساعت هوشمند",price:3500,img:"https://images.unsplash.com/photo-1516570161787-2fd917215a3d"},
-{name:"اسپیکر",price:2500,img:"https://images.unsplash.com/photo-1512446733611-9099a758eeb3"},
-{name:"دوربین",price:32000,img:"https://images.unsplash.com/photo-1519183071298-a2962be96c2c"}
-];
-
-let cart=[];
-
-function showHome(){
-document.getElementById("content").innerHTML=
-"<h2>به فروشگاه امیرعلی خوش آمدید 🔥</h2><p>بهترین محصولات با بهترین قیمت</p>";
-}
-
-function showProducts(){
-let html='<div class="products">';
-products.forEach((p,i)=>{
-html+=`
 <div class="card">
-<img src="${p.img}">
-<h4>${p.name}</h4>
-<div class="price">${p.price} افغانی</div>
-<button onclick="addToCart(${i})">افزودن</button>
+    <img src="https://via.placeholder.com/300x300" alt="لباس 1">
+    <h3>لباس اسپرت</h3>
+    <div class="price">1200 افغانی</div>
+    <a href="https://wa.me/YOURNUMBER" target="_blank">
+        <button class="btn">خرید در واتساپ</button>
+    </a>
 </div>
-`;
-});
-html+='</div>';
-html+=`
-<div class="cart">
-<h3>سبد خرید</h3>
-<div id="cartItems"></div>
-<p><b>جمع کل:</b> <span id="total">0</span> افغانی</p>
-<input id="name" placeholder="نام شما">
-<input id="phone" placeholder="شماره تماس">
-<button onclick="sendOrder()">ارسال به واتساپ</button>
+
+<div class="card">
+    <img src="https://via.placeholder.com/300x300" alt="لباس 2">
+    <h3>لباس رسمی</h3>
+    <div class="price">1500 افغانی</div>
+    <a href="https://wa.me/YOURNUMBER" target="_blank">
+        <button class="btn">خرید در واتساپ</button>
+    </a>
 </div>
-`;
-document.getElementById("content").innerHTML=html;
-updateCart();
-}
 
-function showSettings(){
-document.getElementById("content").innerHTML=
-`<h3>تنظیمات</h3>
-<button class="toggle" onclick="toggleDark()">تغییر حالت تیره / روشن</button>`;
-}
+<div class="card">
+    <img src="https://via.placeholder.com/300x300" alt="لباس 3">
+    <h3>هودی جدید</h3>
+    <div class="price">1000 افغانی</div>
+    <a href="https://wa.me/YOURNUMBER" target="_blank">
+        <button class="btn">خرید در واتساپ</button>
+    </a>
+</div>
 
-function toggleDark(){
-document.body.classList.toggle("dark");
-}
-
-function addToCart(i){
-cart.push(products[i]);
-updateCart();
-}
-
-function updateCart(){
-if(!document.getElementById("cartItems")) return;
-let total=0;
-let items="";
-cart.forEach(item=>{
-total+=item.price;
-items+=`<p>${item.name} - ${item.price}</p>`;
-});
-document.getElementById("cartItems").innerHTML=items;
-document.getElementById("total").innerText=total;
-}
-
-function sendOrder(){
-let name=document.getElementById("name").value;
-let phone=document.getElementById("phone").value;
-let total=document.getElementById("total").innerText;
-
-let message="سفارش جدید:%0A";
-cart.forEach(item=>{
-message+=item.name+" - "+item.price+" افغانی%0A";
-});
-message+="جمع کل: "+total+" افغانی%0A";
-message+="نام: "+name+"%0Aشماره: "+phone;
-
-window.open("https://wa.me/93796552252?text="+message,"_blank");
-}
-
-showHome();
-
-</script>
+</section>
 
 </body>
 </html>
