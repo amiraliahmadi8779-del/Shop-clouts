@@ -1,164 +1,174 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amir Shop - Future Market</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
+<title>Luxury Fashion Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
 
 body{
-background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+margin:0;
+font-family:'Vazirmatn',sans-serif;
+background:#f4f4f4;
+direction:rtl;
+transition:0.3s;
+}
+
+.dark{
+background:#121212;
 color:white;
-overflow-x:hidden;
 }
 
 header{
+background:white;
+padding:15px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:20px 40px;
-backdrop-filter:blur(20px);
-background:rgba(255,255,255,0.05);
+box-shadow:0 2px 15px rgba(0,0,0,0.1);
 position:sticky;
 top:0;
-z-index:100;
+z-index:1000;
+}
+
+.dark header{
+background:#1e1e1e;
 }
 
 .logo{
-font-size:28px;
-font-weight:700;
-background:linear-gradient(90deg,#00f2fe,#4facfe);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+font-weight:bold;
+font-size:20px;
 }
 
-.cart-btn{
-background:linear-gradient(90deg,#ff00cc,#333399);
-padding:10px 20px;
-border:none;
-border-radius:20px;
-color:white;
+.actions{
+display:flex;
+gap:10px;
+}
+
+button{
 cursor:pointer;
+border:none;
+padding:8px 12px;
+border-radius:6px;
 }
 
-.products{
+.toggle{
+background:black;
+color:white;
+}
+
+.search{
+padding:8px;
+width:150px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+.container{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:25px;
-padding:40px;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+padding:20px;
 }
 
 .card{
-background:rgba(255,255,255,0.05);
-border-radius:20px;
-padding:20px;
-backdrop-filter:blur(15px);
-transition:0.4s;
-position:relative;
+background:white;
+border-radius:12px;
 overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.dark .card{
+background:#1e1e1e;
 }
 
 .card:hover{
-transform:translateY(-10px) scale(1.03);
-box-shadow:0 0 30px #00f2fe;
+transform:translateY(-8px);
 }
 
 .card img{
 width:100%;
-border-radius:15px;
+height:250px;
+object-fit:cover;
 }
 
 .card h3{
-margin:10px 0;
+margin:10px;
+font-size:16px;
 }
 
 .price{
-color:#00f2fe;
+color:#e91e63;
 font-weight:bold;
+margin:0 10px 10px;
 }
 
-button{
-margin-top:10px;
-padding:8px 15px;
-border:none;
-border-radius:15px;
-background:linear-gradient(90deg,#00f2fe,#4facfe);
-color:black;
-cursor:pointer;
-font-weight:bold;
+.card button{
+margin:10px;
+background:#000;
+color:white;
+width:calc(100% - 20px);
 }
 
-.ai-box{
+.cart-box{
 position:fixed;
 bottom:20px;
-right:20px;
-width:300px;
-background:rgba(255,255,255,0.1);
-padding:15px;
-border-radius:20px;
-backdrop-filter:blur(20px);
+left:20px;
+background:black;
+color:white;
+padding:12px 15px;
+border-radius:30px;
+cursor:pointer;
 }
 
-.ai-box input{
-width:100%;
-padding:8px;
-border-radius:10px;
-border:none;
-margin-top:10px;
+footer{
+text-align:center;
+padding:30px;
 }
 
 </style>
 </head>
-
 <body>
 
 <header>
-<div class="logo">Amir Shop</div>
-<button class="cart-btn" onclick="showCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+<div class="logo">Luxury Fashion 👗</div>
+<div class="actions">
+<input type="text" class="search" placeholder="جستجو..." onkeyup="searchProduct(this.value)">
+<button class="toggle" onclick="toggleMode()">🌙</button>
+</div>
 </header>
 
-<section class="products" id="productList">
-</section>
+<div class="container" id="products"></div>
 
-<div class="ai-box">
-<b>AI Suggestion 🤖</b>
-<div id="aiResponse">Type what you need...</div>
-<input type="text" placeholder="Search product..." onkeyup="aiSuggest(this.value)">
-</div>
+<div class="cart-box" onclick="sendOrder()">🛒 ارسال سفارش (<span id="count">0</span>)</div>
+
+<footer>
+<p>تماس با ما</p>
+<a href="mailto:yourgmail@gmail.com">ارسال ایمیل</a>
+</footer>
 
 <script>
 
 let products = [
-{name:"iPhone 15",price:999,img:"https://picsum.photos/300?1"},
-{name:"Gaming Laptop",price:1500,img:"https://picsum.photos/300?2"},
-{name:"Smart Watch",price:250,img:"https://picsum.photos/300?3"},
-{name:"Headphones",price:120,img:"https://picsum.photos/300?4"},
-{name:"VR Glass",price:450,img:"https://picsum.photos/300?5"},
-{name:"Camera Pro",price:800,img:"https://picsum.photos/300?6"}
+{name:"مانتو مجلسی",price:850000,img:"https://via.placeholder.com/300x400"},
+{name:"پیراهن تابستانی",price:620000,img:"https://via.placeholder.com/300x400"},
+{name:"ست اسپرت",price:540000,img:"https://via.placeholder.com/300x400"},
+{name:"لباس مجلسی بلند",price:1200000,img:"https://via.placeholder.com/300x400"}
 ];
 
 let cart = [];
 
-function displayProducts(){
-let list = document.getElementById("productList");
-list.innerHTML="";
-products.forEach((p,index)=>{
-list.innerHTML+=`
+function render(list){
+document.getElementById("products").innerHTML="";
+list.forEach((p,i)=>{
+document.getElementById("products").innerHTML+=`
 <div class="card">
 <img src="${p.img}">
 <h3>${p.name}</h3>
-<div class="price">$${p.price}</div>
-<button onclick="addToCart(${index})">Add to Cart</button>
+<div class="price">${p.price.toLocaleString()} تومان</div>
+<button onclick="addToCart(${i})">افزودن به سبد</button>
 </div>
 `;
 });
@@ -166,28 +176,28 @@ list.innerHTML+=`
 
 function addToCart(i){
 cart.push(products[i]);
-document.getElementById("cartCount").innerText = cart.length;
+document.getElementById("count").innerText=cart.length;
 }
 
-function showCart(){
-alert("You have "+cart.length+" items in cart.");
+function sendOrder(){
+if(cart.length==0){alert("سبد خرید خالی است");return;}
+let text="سلام، این سفارش منه:%0A";
+cart.forEach(p=>{
+text+=p.name+" - "+p.price+" تومان%0A";
+});
+window.open("https://wa.me/989000000000?text="+text);
 }
 
-function aiSuggest(text){
-if(text.length<2){
-document.getElementById("aiResponse").innerText="Type more...";
-return;
+function searchProduct(value){
+let filtered=products.filter(p=>p.name.includes(value));
+render(filtered);
 }
 
-let result = products.filter(p=>p.name.toLowerCase().includes(text.toLowerCase()));
-if(result.length>0){
-document.getElementById("aiResponse").innerText="AI Suggest: "+result[0].name;
-}else{
-document.getElementById("aiResponse").innerText="No product found 😢";
-}
+function toggleMode(){
+document.body.classList.toggle("dark");
 }
 
-displayProducts();
+render(products);
 
 </script>
 
