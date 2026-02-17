@@ -3,141 +3,218 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amir Shop</title>
+<title>Digikala Afghanistan</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-body{margin:0;font-family:'Vazirmatn',sans-serif;background:#f5f6fa;}
-header{background:#111;color:white;display:flex;justify-content:space-between;align-items:center;padding:15px 30px;}
-.logo{font-size:24px;font-weight:bold;color:#00e0ff;}
-.controls{display:flex;gap:10px;}
-input,select{padding:7px;border-radius:5px;border:none;}
-.cart-icon{cursor:pointer;background:#00e0ff;padding:8px 12px;border-radius:5px;color:black;font-weight:bold;}
+body{margin:0;font-family:'Vazirmatn',sans-serif;background:#f1f2f6;}
+header{
+background:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 30px;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+position:sticky;top:0;z-index:1000;
+}
+.logo{font-size:22px;font-weight:bold;color:#e84118;}
+.search{width:40%;padding:8px;border-radius:6px;border:1px solid #ddd;}
+.cart{cursor:pointer;background:#e84118;color:white;padding:8px 12px;border-radius:6px;}
 
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;padding:30px;}
-.card{background:white;padding:15px;border-radius:15px;box-shadow:0 5px 20px rgba(0,0,0,0.08);transition:0.3s;}
+.slider{
+width:100%;
+height:250px;
+overflow:hidden;
+position:relative;
+margin-top:10px;
+}
+.slide{
+position:absolute;
+width:100%;
+height:100%;
+background-size:cover;
+background-position:center;
+transition:opacity 1s;
+}
+.categories{
+display:flex;
+gap:15px;
+padding:20px;
+justify-content:center;
+flex-wrap:wrap;
+}
+.cat{
+background:white;
+padding:10px 20px;
+border-radius:20px;
+cursor:pointer;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+padding:20px;
+}
+.card{
+background:white;
+padding:15px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+transition:0.3s;
+}
 .card:hover{transform:translateY(-5px);}
 .card img{width:100%;border-radius:10px;}
-.price{color:#00b894;font-weight:bold;margin:10px 0;}
-.btn{background:#00e0ff;border:none;padding:8px;width:100%;border-radius:8px;cursor:pointer;font-weight:bold;}
-.btn:hover{background:#00bcd4;}
-
-.cart-box{position:fixed;right:0;top:0;width:300px;height:100%;background:white;box-shadow:-5px 0 15px rgba(0,0,0,0.1);padding:20px;overflow:auto;display:none;}
-.checkout{background:#25D366;color:white;padding:10px;border:none;width:100%;border-radius:8px;cursor:pointer;margin-top:10px;}
+.price{color:#2ecc71;font-weight:bold;}
+.old{color:gray;text-decoration:line-through;font-size:13px;}
+.btn{
+background:#e84118;
+color:white;
+border:none;
+padding:8px;
+width:100%;
+border-radius:8px;
+cursor:pointer;
+margin-top:5px;
+}
+.cart-box{
+position:fixed;
+right:0;
+top:0;
+width:300px;
+height:100%;
+background:white;
+box-shadow:-5px 0 15px rgba(0,0,0,0.1);
+padding:20px;
+overflow:auto;
+display:none;
+}
+.checkout{
+background:#25D366;
+color:white;
+padding:10px;
+border:none;
+width:100%;
+border-radius:8px;
+cursor:pointer;
+margin-top:10px;
+}
 </style>
 </head>
 
 <body>
 
 <header>
-<div class="logo">Amir Shop</div>
-
-<div class="controls">
-<input type="text" id="search" placeholder="جستجو...">
-<select id="category">
-<option value="all">همه دسته‌ها</option>
-<option value="مردانه">مردانه</option>
-<option value="زنانه">زنانه</option>
-<option value="اسپرت">اسپرت</option>
-</select>
-</div>
-
-<div class="cart-icon" onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</div>
+<div class="logo">Digikala Afghanistan</div>
+<input class="search" id="search" placeholder="جستجو محصول...">
+<div class="cart" onclick="toggleCart()">🛒 (<span id="count">0</span>)</div>
 </header>
 
-<div class="products" id="product-list"></div>
+<div class="slider">
+<div class="slide" style="background-image:url('https://via.placeholder.com/1200x300/ff7675');opacity:1"></div>
+<div class="slide" style="background-image:url('https://via.placeholder.com/1200x300/74b9ff');opacity:0"></div>
+<div class="slide" style="background-image:url('https://via.placeholder.com/1200x300/55efc4');opacity:0"></div>
+</div>
 
-<div class="cart-box" id="cart-box">
+<div class="categories">
+<div class="cat" onclick="filterCat('all')">همه</div>
+<div class="cat" onclick="filterCat('مردانه')">مردانه</div>
+<div class="cat" onclick="filterCat('زنانه')">زنانه</div>
+<div class="cat" onclick="filterCat('دیجیتال')">دیجیتال</div>
+</div>
+
+<div class="products" id="products"></div>
+
+<div class="cart-box" id="cartBox">
 <h3>سبد خرید</h3>
-<div id="cart-items"></div>
-<button class="checkout" onclick="checkout()">خرید در واتساپ</button>
+<div id="cartItems"></div>
+<button class="checkout" onclick="checkout()">پرداخت در واتساپ</button>
 </div>
 
 <script>
-let products=[
-{id:1,name:"هودی اسپرت",price:1200,cat:"اسپرت",img:"https://via.placeholder.com/300"},
-{id:2,name:"تی شرت مشکی",price:800,cat:"مردانه",img:"https://via.placeholder.com/300"},
-{id:3,name:"پیراهن رسمی",price:1500,cat:"مردانه",img:"https://via.placeholder.com/300"},
-{id:4,name:"مانتو جدید",price:2000,cat:"زنانه",img:"https://via.placeholder.com/300"},
-{id:5,name:"کت پاییزی",price:2200,cat:"مردانه",img:"https://via.placeholder.com/300"},
-{id:6,name:"شلوار جین",price:1300,cat:"مردانه",img:"https://via.placeholder.com/300"},
-{id:7,name:"لباس مجلسی",price:2500,cat:"زنانه",img:"https://via.placeholder.com/300"},
-{id:8,name:"سویشرت سفید",price:1100,cat:"اسپرت",img:"https://via.placeholder.com/300"},
-{id:9,name:"کفش اسپرت",price:1800,cat:"اسپرت",img:"https://via.placeholder.com/300"},
-{id:10,name:"چادر مشکی",price:1700,cat:"زنانه",img:"https://via.placeholder.com/300"},
-{id:11,name:"پالتو زمستانی",price:3000,cat:"زنانه",img:"https://via.placeholder.com/300"},
-{id:12,name:"تی شرت سفید",price:750,cat:"مردانه",img:"https://via.placeholder.com/300"},
-{id:13,name:"ست ورزشی",price:1600,cat:"اسپرت",img:"https://via.placeholder.com/300"},
-{id:14,name:"کت چرم",price:3500,cat:"مردانه",img:"https://via.placeholder.com/300"},
-{id:15,name:"بلوز دخترانه",price:900,cat:"زنانه",img:"https://via.placeholder.com/300"},
-{id:16,name:"کلاه اسپرت",price:400,cat:"اسپرت",img:"https://via.placeholder.com/300"},
-{id:17,name:"شال جدید",price:500,cat:"زنانه",img:"https://via.placeholder.com/300"},
-{id:18,name:"پیراهن تابستانی",price:1400,cat:"زنانه",img:"https://via.placeholder.com/300"},
-{id:19,name:"سویشرت مردانه",price:1500,cat:"مردانه",img:"https://via.placeholder.com/300"},
-{id:20,name:"کفش رسمی",price:2800,cat:"مردانه",img:"https://via.placeholder.com/300"}
-];
+let products=[];
+for(let i=1;i<=30;i++){
+products.push({
+id:i,
+name:"محصول "+i,
+price:1000+i*20,
+old:1200+i*20,
+cat:i%3==0?"دیجیتال":i%2==0?"زنانه":"مردانه",
+img:"https://via.placeholder.com/300"
+});
+}
 
 let cart=[];
+let currentCat="all";
 
-function displayProducts(list){
-let container=document.getElementById("product-list");
+function display(list){
+let container=document.getElementById("products");
 container.innerHTML="";
 list.forEach(p=>{
 container.innerHTML+=`
 <div class="card">
 <img src="${p.img}">
-<h3>${p.name}</h3>
+<h4>${p.name}</h4>
+<div class="old">${p.old} افغانی</div>
 <div class="price">${p.price} افغانی</div>
-<button class="btn" onclick="addToCart(${p.id})">افزودن به سبد</button>
+<button class="btn" onclick="add(${p.id})">افزودن به سبد</button>
 </div>`;
 });
 }
 
-function addToCart(id){
-let product=products.find(p=>p.id===id);
-cart.push(product);
+function add(id){
+let p=products.find(x=>x.id===id);
+cart.push(p);
+document.getElementById("count").innerText=cart.length;
+}
+
+function toggleCart(){
+let box=document.getElementById("cartBox");
+box.style.display=box.style.display==="block"?"none":"block";
 updateCart();
 }
 
 function updateCart(){
-document.getElementById("cart-count").innerText=cart.length;
-let items=document.getElementById("cart-items");
-items.innerHTML="";
+let c=document.getElementById("cartItems");
+c.innerHTML="";
 cart.forEach(p=>{
-items.innerHTML+=`<p>${p.name} - ${p.price} افغانی</p>`;
+c.innerHTML+=`<p>${p.name} - ${p.price}</p>`;
 });
-}
-
-function toggleCart(){
-let box=document.getElementById("cart-box");
-box.style.display=box.style.display==="block"?"none":"block";
 }
 
 function checkout(){
-let text="سلام، این محصولات رو میخوام:%0A";
-cart.forEach(p=>{
-text+=p.name+" - "+p.price+" افغانی%0A";
-});
-window.open("https://wa.me/937XXXXXXXX?text="+text);
+let text="سلام اینا رو میخوام:%0A";
+cart.forEach(p=>{text+=p.name+" - "+p.price+"%0A";});
+window.open("https://wa.me/93796552252?text="+text);
 }
 
-function filterProducts(){
-let search=document.getElementById("search").value.toLowerCase();
-let category=document.getElementById("category").value;
+function filterCat(cat){
+currentCat=cat;
+applyFilter();
+}
 
+document.getElementById("search").addEventListener("keyup",applyFilter);
+
+function applyFilter(){
+let s=document.getElementById("search").value.toLowerCase();
 let filtered=products.filter(p=>{
-let matchName=p.name.toLowerCase().includes(search);
-let matchCat=(category==="all"||p.cat===category);
+let matchName=p.name.toLowerCase().includes(s);
+let matchCat=currentCat==="all"||p.cat===currentCat;
 return matchName && matchCat;
 });
-
-displayProducts(filtered);
+display(filtered);
 }
 
-document.getElementById("search").addEventListener("keyup",filterProducts);
-document.getElementById("category").addEventListener("change",filterProducts);
+display(products);
 
-displayProducts(products);
+/* اسلایدر */
+let slides=document.querySelectorAll(".slide");
+let index=0;
+setInterval(()=>{
+slides[index].style.opacity=0;
+index=(index+1)%slides.length;
+slides[index].style.opacity=1;
+},3000);
 </script>
 
 </body>
