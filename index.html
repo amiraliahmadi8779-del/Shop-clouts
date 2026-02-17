@@ -3,218 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Digikala Afghanistan</title>
+<title>Amir X – King Edition</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
-
 <style>
-body{margin:0;font-family:'Vazirmatn',sans-serif;background:#f1f2f6;}
-header{
-background:white;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 30px;
-box-shadow:0 2px 10px rgba(0,0,0,0.05);
-position:sticky;top:0;z-index:1000;
-}
-.logo{font-size:22px;font-weight:bold;color:#e84118;}
-.search{width:40%;padding:8px;border-radius:6px;border:1px solid #ddd;}
-.cart{cursor:pointer;background:#e84118;color:white;padding:8px 12px;border-radius:6px;}
-
-.slider{
-width:100%;
-height:250px;
-overflow:hidden;
-position:relative;
-margin-top:10px;
-}
-.slide{
-position:absolute;
-width:100%;
-height:100%;
-background-size:cover;
-background-position:center;
-transition:opacity 1s;
-}
-.categories{
-display:flex;
-gap:15px;
-padding:20px;
-justify-content:center;
-flex-wrap:wrap;
-}
-.cat{
-background:white;
-padding:10px 20px;
-border-radius:20px;
-cursor:pointer;
-box-shadow:0 2px 10px rgba(0,0,0,0.05);
-}
-.products{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-padding:20px;
-}
-.card{
-background:white;
-padding:15px;
-border-radius:15px;
-box-shadow:0 5px 15px rgba(0,0,0,0.05);
-transition:0.3s;
-}
-.card:hover{transform:translateY(-5px);}
-.card img{width:100%;border-radius:10px;}
-.price{color:#2ecc71;font-weight:bold;}
-.old{color:gray;text-decoration:line-through;font-size:13px;}
-.btn{
-background:#e84118;
-color:white;
-border:none;
-padding:8px;
-width:100%;
-border-radius:8px;
-cursor:pointer;
-margin-top:5px;
-}
-.cart-box{
-position:fixed;
-right:0;
-top:0;
-width:300px;
-height:100%;
-background:white;
-box-shadow:-5px 0 15px rgba(0,0,0,0.1);
-padding:20px;
-overflow:auto;
-display:none;
-}
-.checkout{
-background:#25D366;
-color:white;
-padding:10px;
-border:none;
-width:100%;
-border-radius:8px;
-cursor:pointer;
-margin-top:10px;
-}
+:root{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--primary:#f59e0b;}
+body{margin:0;font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);}
+header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;background:var(--card);position:sticky;top:0}
+.logo{font-weight:700;color:var(--primary)}
+.btn{background:var(--primary);border:none;color:#111;padding:8px 12px;border-radius:8px;cursor:pointer}
+.section{padding:20px}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
+.card{background:var(--card);padding:12px;border-radius:12px}
+.card img{width:100%;border-radius:8px}
+.price{color:#22c55e;font-weight:700}
+.small{font-size:13px;color:#94a3b8}
+.panel{position:fixed;right:0;top:0;width:320px;height:100%;background:var(--card);padding:15px;overflow:auto;display:none}
+.badge{padding:4px 8px;border-radius:999px;background:#334155;margin-right:6px}
+.wheel{width:220px;height:220px;border-radius:50%;margin:10px auto;border:8px solid var(--primary);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.center{display:flex;justify-content:center;align-items:center}
 </style>
 </head>
-
 <body>
 
 <header>
-<div class="logo">Digikala Afghanistan</div>
-<input class="search" id="search" placeholder="جستجو محصول...">
-<div class="cart" onclick="toggleCart()">🛒 (<span id="count">0</span>)</div>
+<div class="logo">👑 Amir X King</div>
+<div>
+<button class="btn" onclick="openCart()">🛒 <span id="count">0</span></button>
+<button class="btn" onclick="openVIP()">🏆 VIP</button>
+</div>
 </header>
 
-<div class="slider">
-<div class="slide" style="background-image:url('https://via.placeholder.com/1200x300/ff7675');opacity:1"></div>
-<div class="slide" style="background-image:url('https://via.placeholder.com/1200x300/74b9ff');opacity:0"></div>
-<div class="slide" style="background-image:url('https://via.placeholder.com/1200x300/55efc4');opacity:0"></div>
+<div class="section">
+<h3>🧠 تست شخصیت استایل</h3>
+<p class="small">یکی رو انتخاب کن:</p>
+<button class="btn" onclick="setStyle('خیابونی')">خیابونی</button>
+<button class="btn" onclick="setStyle('مینیمال')">مینیمال</button>
+<button class="btn" onclick="setStyle('لوکس')">لوکس</button>
+<p id="styleResult"></p>
 </div>
 
-<div class="categories">
-<div class="cat" onclick="filterCat('all')">همه</div>
-<div class="cat" onclick="filterCat('مردانه')">مردانه</div>
-<div class="cat" onclick="filterCat('زنانه')">زنانه</div>
-<div class="cat" onclick="filterCat('دیجیتال')">دیجیتال</div>
+<div class="section">
+<h3>🎁 گردونه شانس (رو دایره بزن)</h3>
+<div class="wheel" onclick="spinWheel()">🎉 بچرخون</div>
+<p id="discountText"></p>
 </div>
 
+<div class="section">
+<h3>🔥 محصولات پیشنهادی</h3>
 <div class="products" id="products"></div>
+</div>
 
-<div class="cart-box" id="cartBox">
+<div class="panel" id="cartPanel">
 <h3>سبد خرید</h3>
 <div id="cartItems"></div>
-<button class="checkout" onclick="checkout()">پرداخت در واتساپ</button>
+<button class="btn" onclick="checkout()">پرداخت در واتساپ</button>
+</div>
+
+<div class="panel" id="vipPanel">
+<h3>🏆 سطح کاربری</h3>
+<p>امتیاز: <span id="points">0</span></p>
+<p>سطح: <span id="level">برنز</span></p>
 </div>
 
 <script>
-let products=[];
-for(let i=1;i<=30;i++){
-products.push({
-id:i,
-name:"محصول "+i,
-price:1000+i*20,
-old:1200+i*20,
-cat:i%3==0?"دیجیتال":i%2==0?"زنانه":"مردانه",
-img:"https://via.placeholder.com/300"
+let products=[
+{id:1,name:"هودی خاص",price:1200,style:"خیابونی"},
+{id:2,name:"کت مینیمال",price:2000,style:"مینیمال"},
+{id:3,name:"ست لوکس",price:3500,style:"لوکس"},
+{id:4,name:"تی شرت آلفا",price:900,style:"خیابونی"},
+{id:5,name:"پیراهن ساده",price:1500,style:"مینیمال"},
+{id:6,name:"کت VIP",price:5000,style:"لوکس"}
+];
+
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+let points=parseInt(localStorage.getItem("points"))||0;
+let discount=0;
+
+function display(list){
+let c=document.getElementById("products");
+c.innerHTML="";
+list.forEach(p=>{
+let finalPrice=p.price - (p.price*discount/100);
+c.innerHTML+=`
+<div class="card">
+<img src="https://via.placeholder.com/300">
+<h4>${p.name}</h4>
+<div class="price">${finalPrice} افغانی</div>
+<button class="btn" onclick="add(${p.id})">افزودن</button>
+</div>`;
 });
 }
 
-let cart=[];
-let currentCat="all";
-
-function display(list){
-let container=document.getElementById("products");
-container.innerHTML="";
-list.forEach(p=>{
-container.innerHTML+=`
-<div class="card">
-<img src="${p.img}">
-<h4>${p.name}</h4>
-<div class="old">${p.old} افغانی</div>
-<div class="price">${p.price} افغانی</div>
-<button class="btn" onclick="add(${p.id})">افزودن به سبد</button>
-</div>`;
-});
+function setStyle(style){
+document.getElementById("styleResult").innerText="تو استایل "+style+" هستی 🔥";
+let filtered=products.filter(p=>p.style===style);
+display(filtered);
 }
 
 function add(id){
 let p=products.find(x=>x.id===id);
 cart.push(p);
+points+=10;
+localStorage.setItem("cart",JSON.stringify(cart));
+localStorage.setItem("points",points);
+updateVIP();
 document.getElementById("count").innerText=cart.length;
 }
 
-function toggleCart(){
-let box=document.getElementById("cartBox");
-box.style.display=box.style.display==="block"?"none":"block";
+function openCart(){toggle('cartPanel')}
+function openVIP(){toggle('vipPanel')}
+
+function toggle(id){
+let el=document.getElementById(id);
+el.style.display=el.style.display==="block"?"none":"block";
+updateVIP();
 updateCart();
 }
 
 function updateCart(){
 let c=document.getElementById("cartItems");
 c.innerHTML="";
-cart.forEach(p=>{
-c.innerHTML+=`<p>${p.name} - ${p.price}</p>`;
-});
+cart.forEach(p=>{c.innerHTML+=`<p>${p.name} - ${p.price}</p>`});
+}
+
+function spinWheel(){
+let prizes=[5,10,15,20];
+discount=prizes[Math.floor(Math.random()*prizes.length)];
+document.getElementById("discountText").innerText="تبریک! "+discount+"٪ تخفیف گرفتی 🎉";
+display(products);
+}
+
+function updateVIP(){
+document.getElementById("points").innerText=points;
+let level="برنز";
+if(points>50) level="نقره‌ای";
+if(points>100) level="طلایی";
+if(points>200) level="VIP 👑";
+document.getElementById("level").innerText=level;
 }
 
 function checkout(){
-let text="سلام اینا رو میخوام:%0A";
-cart.forEach(p=>{text+=p.name+" - "+p.price+"%0A";});
-window.open("https://wa.me/93796552252?text="+text);
-}
-
-function filterCat(cat){
-currentCat=cat;
-applyFilter();
-}
-
-document.getElementById("search").addEventListener("keyup",applyFilter);
-
-function applyFilter(){
-let s=document.getElementById("search").value.toLowerCase();
-let filtered=products.filter(p=>{
-let matchName=p.name.toLowerCase().includes(s);
-let matchCat=currentCat==="all"||p.cat===currentCat;
-return matchName && matchCat;
-});
-display(filtered);
+let text="سلام سفارش منه:%0A";
+cart.forEach(p=>{text+=p.name+"%0A"});
+window.open("https://wa.me/937XXXXXXXX?text="+text);
 }
 
 display(products);
-
-/* اسلایدر */
-let slides=document.querySelectorAll(".slide");
-let index=0;
-setInterval(()=>{
-slides[index].style.opacity=0;
-index=(index+1)%slides.length;
-slides[index].style.opacity=1;
-},3000);
+updateVIP();
+document.getElementById("count").innerText=cart.length;
 </script>
 
 </body>
